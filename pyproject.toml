@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scan-sorter"
+version = "0.1.0"
+description = "A GTK application for visually sorting scanned photographs and slides."
+requires-python = ">=3.11"
+
+[project.scripts]
+scan-sorter = "scan_sorter.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

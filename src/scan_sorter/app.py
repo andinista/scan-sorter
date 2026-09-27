@@ -3,10 +3,15 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
+from pathlib import Path
+
 
 class ScanSorterApplication(Gtk.Application):
     def __init__(self):
         super().__init__(application_id="com.github.scan_sorter")
+        self.folder = None
+        self.images = []
+        self.image_box = None
 
     def do_activate(self):
         window = Gtk.ApplicationWindow(application=self)
@@ -28,6 +33,12 @@ class ScanSorterApplication(Gtk.Application):
         open_button.connect("clicked", self.on_open_folder_clicked)
 
         main_box.append(open_button)
+
+        self.image_box = Gtk.FlowBox()
+        self.image_box.set_column_spacing(12)
+        self.image_box.set_row_spacing(12)
+
+        main_box.append(self.image_box)
         window.set_child(main_box)
 
         window.present()
@@ -44,8 +55,24 @@ class ScanSorterApplication(Gtk.Application):
 
     def on_folder_selected(self, dialog, result):
         try:
-            folder = dialog.select_folder_finish(result)
-            print(folder.get_path())
+            self.folder = dialog.select_folder_finish(result)
+            path = Path(self.folder.get_path())
+
+            image_extensions = {".jpg", ".jpeg", ".png", ".tiff"}
+
+            self.images = []
+
+            for item in path.iterdir():
+                if item.is_file() and item.suffix.lower() in image_extensions:
+                    self.images.append(item)
+            for image in self.images:
+                print(image)
+
+            for image_path in self.images:
+                image = Gtk.Image.new_from_file(str(image_path))
+                image.set_pixel_size(200)
+                self.image_box.append(image)
+
         except Exception:
             print("No folder selected")
 

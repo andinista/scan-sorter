@@ -38,7 +38,12 @@ class ScanSorterApplication(Gtk.Application):
         self.image_box.set_column_spacing(12)
         self.image_box.set_row_spacing(12)
 
-        main_box.append(self.image_box)
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_vexpand(True)
+        scrolled_window.set_child(self.image_box)
+
+        main_box.append(scrolled_window)
+
         window.set_child(main_box)
 
         window.present()
